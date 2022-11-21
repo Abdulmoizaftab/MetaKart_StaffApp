@@ -13,8 +13,8 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown:false}}>
-        <Stack.Screen name="HomeTab" component={HomeTab} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="HomeTab" component={HomeTab} />
       </Stack.Navigator>
     </NavigationContainer>
   )
