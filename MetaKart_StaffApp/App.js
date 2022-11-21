@@ -6,6 +6,10 @@ import Login from './src/screens/Login';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeTab from './src/screens/HomeTab';
 import SplashScreen from 'react-native-splash-screen';
+import Home from './src/screens/Home';
+import ViewDetails from './src/screens/ViewDetails';
+
+
 
 
 const Stack = createStackNavigator();
@@ -18,7 +22,9 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown:false}}>
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="HomeTab" component={HomeTab} />
+        <Stack.Screen name="ViewDetails" component={ViewDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   )

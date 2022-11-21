@@ -6,8 +6,8 @@ const Home = () => {
     const navigate = useNavigation()
   return (
     <View>
-      <Text>Home</Text>
-      <TouchableOpacity onPress={()=>navigate.navigate("Login")}><Text>Go To Login</Text></TouchableOpacity>
+      <Text>Dashboard</Text>
+      <TouchableOpacity onPress={()=>navigate.navigate("HomeTab")}><Text>Go To tabs</Text></TouchableOpacity>
     </View>
   )
 }

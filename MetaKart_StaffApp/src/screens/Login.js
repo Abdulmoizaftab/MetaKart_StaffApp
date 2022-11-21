@@ -78,7 +78,7 @@ const Login = () => {
                             <TextInput value={password} selectionColor="black" style={Style.email_view_textinput} secureTextEntry={true} onChangeText={setPassword} />
                         </View>
 
-                        <TouchableOpacity style={Style.login_btn} onPress={()=>navigate.navigate("HomeTab")} >
+                        <TouchableOpacity style={Style.login_btn} onPress={()=>navigate.navigate("Home")} >
                             {/* {loadings===true?
             <ActivityIndicator size='large' color="white"/>:
             <Text style={Style.login_btn_text}>Login</Text>
