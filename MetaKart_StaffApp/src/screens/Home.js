@@ -59,8 +59,8 @@ const Home = () => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.checkoutBtn}>
-          <Text style={styles.checkoutBtnText}>Checkout</Text>
+        <TouchableOpacity style={styles.checkoutBtn} onPress={()=>navigate.navigate("HomeTab")}>
+          <Text style={styles.checkoutBtnText}>Show Orders</Text>
         </TouchableOpacity>
       </View>
     </View>
