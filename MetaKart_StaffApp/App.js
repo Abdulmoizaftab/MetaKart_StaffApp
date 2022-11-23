@@ -24,7 +24,15 @@ const App = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="HomeTab" component={HomeTab} />
-        <Stack.Screen name="ViewDetails" component={ViewDetails} />
+        <Stack.Screen name="ViewDetails" component={ViewDetails} 
+        options={{headerShown:true,
+          title:"Order details",
+         headerStyle:{backgroundColor:"#5A56E9"},
+         headerTintColor: '#fff',
+         headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+         headerTitleAlign:"center"}} />
       </Stack.Navigator>
     </NavigationContainer>
   )
