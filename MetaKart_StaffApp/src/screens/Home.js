@@ -8,12 +8,13 @@ import Octicons from 'react-native-vector-icons/Octicons'
 const Home = () => {
   const navigate = useNavigation()
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <View style={{ backgroundColor: "white",flex:1 }}>
       <View style={styles.pageHeader}>
+        {/* <MaterialCommunityIcons name='user'/> */}
         <Text style={styles.pageHeaderText}>Staff User 01</Text>
         <MaterialCommunityIcons name="bell" size={21} color="white" style={styles.pageHeaderIcon} />
       </View>
-      <View style={styles.dashboardMain}>
+      <View>
         <View style={styles.dashboardHeader}>
           <Text style={styles.dashboardHeading}>Dashboard</Text>
           {/* <TouchableOpacity style={styles.navigateButton}>
@@ -58,8 +59,9 @@ const Home = () => {
 
           </View>
         </View>
-
-        <TouchableOpacity style={styles.checkoutBtn} onPress={()=>navigate.navigate("HomeTab")}>
+      </View>
+      <View style={styles.finalCheckout}>
+      <TouchableOpacity style={styles.checkoutBtn} onPress={()=>navigate.navigate("HomeTab")}>
           <Text style={styles.checkoutBtnText}>Show Orders</Text>
         </TouchableOpacity>
       </View>
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#5a56e9",
     width: "100%",
     padding: "3%",
-    justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
   },
