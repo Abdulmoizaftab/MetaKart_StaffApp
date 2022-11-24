@@ -1,14 +1,36 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
+import React,{useEffect,useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import axios from 'axios'
+import loaderGif from '../assets/images/loader2.gif'
 
 const Home = () => {
   const navigate = useNavigation()
+  const [trigger,setTrigger] = useState(true)
+  const [data,setData] = useState([])
+  const [isLoading,setIsloading] = useState(true)
+
+  const getData = async()=>{
+    setIsloading(true)
+    const payload = {
+      sectionId:3
+    }
+    axios.post(`http://192.168.1.26:5000/dashboard/dashboardData`, payload)
+      .then((response) => setData(response.data))
+      .then(check => setIsloading(false))
+      .catch((error) => console.error(error))
+  } 
+
+  useEffect(() => {
+    getData()
+  }, [trigger])
+  
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <View style={{ backgroundColor: "white",flex:1}}>
       <View style={styles.pageHeader}>
         <Text style={styles.pageHeaderText}>Staff User 01</Text>
         <MaterialCommunityIcons name="bell" size={21} color="white" style={styles.pageHeaderIcon} />
@@ -16,13 +38,20 @@ const Home = () => {
       <View style={styles.dashboardMain}>
         <View style={styles.dashboardHeader}>
           <Text style={styles.dashboardHeading}>Dashboard</Text>
-          {/* <TouchableOpacity style={styles.navigateButton}>
-            <Text style={styles.navigateButtonText}>Show Tabs</Text>
-          </TouchableOpacity> */}
+          <TouchableOpacity style={styles.navigateButton} onPress={()=>setTrigger(!trigger)}>
+            <Ionicons name="ios-refresh" size={16} color="white" style={{paddingRight:'0.5%'}} />
+            <Text style={styles.navigateButtonText}>Refresh</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.dasboardValues}>
           <View style={styles.orderCountBox}>
-            <Text style={styles.orderCount}>6573</Text>
+            {
+              isLoading ? (
+                <Image source={loaderGif} style={styles.loader} />
+                ):(
+                  <Text style={styles.orderCount}>{data[0][0].orderCount}</Text>
+                  )
+                }
             <Text style={styles.orderText}>Number of Current Orders</Text>
             <Feather name="shopping-bag" size={100} color="#009FC6" style={styles.iconOrder} />
           </View>
@@ -30,13 +59,25 @@ const Home = () => {
           <View style={styles.StatsBoxesFlex}>
             <View style={styles.statsbox}>
               <View style={[styles.statsbox2, { backgroundColor: '#00A65A' }]}>
-                <Text style={styles.statsboxCount}>6895436</Text>
+                {
+                  isLoading ? (
+                    <Image source={loaderGif} style={styles.loader} />
+                    ):(
+                      <Text style={styles.statsboxCount}>{data[1][0].total_Items_In_Section}</Text>
+                  )
+                }
                 <Text style={styles.statsboxText}>Total Items in Section</Text>
                 <Feather name="box" size={60} color="#03894C" style={styles.iconOrder} />
               </View>
 
               <View style={[styles.statsbox2, { backgroundColor: '#F39C11' }]}>
-                <Text style={styles.statsboxCount}>5685</Text>
+                {
+                  isLoading ? (
+                    <Image source={loaderGif} style={styles.loader} />
+                  ) : (
+                    <Text style={styles.statsboxCount}>{data[2][0].low_stock_items}</Text>
+                  )
+                }
                 <Text style={styles.statsboxText}>Number of Low Stock Products</Text>
                 <MaterialCommunityIcons name="elevation-decline" size={60} color="#C68011" style={styles.iconOrder} />
               </View>
@@ -44,13 +85,25 @@ const Home = () => {
 
             <View style={styles.statsbox}>
               <View style={[styles.statsbox2, { backgroundColor: '#DD4C39' }]}>
-                <Text style={styles.statsboxCount}>2345</Text>
+                {
+                  isLoading ? (
+                    <Image source={loaderGif} style={styles.loader} />
+                  ) : (
+                    <Text style={styles.statsboxCount}>{data[3][0].low_stock_items}</Text>
+                  )
+                }
                 <Text style={styles.statsboxText}>Number of Products Handed Over</Text>
                 <MaterialCommunityIcons name="hand-extended-outline" size={60} color="#B73D2E" style={styles.iconOrder} />
               </View>
 
               <View style={[styles.statsbox2, { backgroundColor: '#E8877B' }]}>
-                <Text style={styles.statsboxCount}>1256</Text>
+              {
+                  isLoading ? (
+                    <Image source={loaderGif} style={styles.loader} />
+                  ) : (
+                    <Text style={styles.statsboxCount}>{data[4][0].customer_count}</Text>
+                  )
+                }
                 <Text style={styles.statsboxText}>Number of Customers</Text>
                 <Octicons name="person" size={50} color="#D36659" style={styles.iconOrder} />
               </View>
@@ -59,7 +112,10 @@ const Home = () => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.checkoutBtn} onPress={()=>navigate.navigate("HomeTab")}>
+        
+      </View>
+      <View style={styles.finalCheckout}>
+      <TouchableOpacity style={styles.checkoutBtn} onPress={()=>navigate.navigate("HomeTab")}>
           <Text style={styles.checkoutBtnText}>Show Orders</Text>
         </TouchableOpacity>
       </View>
@@ -76,7 +132,7 @@ const styles = StyleSheet.create({
     padding: "3%",
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   pageHeaderText: {
     color: 'white',
@@ -110,7 +166,10 @@ const styles = StyleSheet.create({
   navigateButton: {
     backgroundColor: '#5a56e9',
     padding: "1.5%",
-    borderRadius: 5
+    borderRadius: 5,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center'
   },
   //============================================================
   dasboardValues: {
@@ -125,7 +184,7 @@ const styles = StyleSheet.create({
     marginHorizontal: '1.3%'
   },
   orderCount: {
-    fontSize: 28,
+    fontSize: 35,
     fontWeight: '800',
     color: 'whitesmoke',
   },
@@ -152,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   statsboxCount: {
-    fontSize: 20,
+    fontSize: 25,
     paddingBottom: '1.5%',
     color: 'white',
     fontWeight: '700',
@@ -185,4 +244,8 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   //==================================================================================
+  loader:{
+    width:40,
+    height:40,
+  }
 })
