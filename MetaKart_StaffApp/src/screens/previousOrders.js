@@ -1,12 +1,20 @@
-import {View, Text, StyleSheet, Image, FlatList, ActivityIndicator,TouchableOpacity,Alert} from 'react-native';
+import {View, Text, StyleSheet, Image, FlatList, ActivityIndicator,TouchableOpacity,Alert,ToastAndroid} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import noOrder from '../assets/images/images/noOrder.png';
+import loaderGif from '../assets/images/images/loader.gif';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { Logout } from '../redux/LoginRedux';
+import axios from 'axios';
 
+
+
+//forwarded
 const PreviousOrders = () => {
-  const [OrdProducts, setOrdProducts] = useState(["1","2","3","4","5"]);
+  const [OrdProducts, setOrdProducts] = useState([]);
   // const [IsRefreshing, setIsRefreshing] = useState(false);
   // const [reload, setReload] = useState(false);
-  // const [isLoading, setLoading] = useState(true);
+   const [isLoading, setLoading] = useState(true);
   // const [limit, setlimit] = useState(6);
   // const [login,setLogin]=useState(false)
   // const {isFetching, error, currentUser, loadings} = useSelector(
@@ -53,166 +61,113 @@ const PreviousOrders = () => {
   //   setLoading(false)
   // }
 
-  // const getData = async () => {
-  //   try {
-  //     if(currentUser){
-  //       setLogin(true)
-  //       const res = await axios.post(`http://192.168.1.24:5000/sql/getOrderDetails/${limit}`,{user_id:currentUser.user[0].user_id},{
-  //         headers: {
-  //         'Authorization': `Bearer ${currentUser.token}` 
-  //       }
-        
-  //     });
-  //     setLoading(false)
-  //     const result = res.data
-  //     //console.log("datatatata==>",result);
-  //     const main_arr = [result[0]];
-  //     var id=result[0].order_id
-  //     for (let i = 1; i < result.length; i++) {
-  //       if(id === result[i].order_id){
-  //           main_arr[i] = {
-  //           item_id: result[i].item_id,
-  //           product_id: result[i].product_id,
-  //           quantity: result[i].quantity,
-  //           imgs: result[i].imgs,
-  //           name: result[i].name,
-  //           price: result[i].price,
-  //           orderStatus: result[i].orderStatus,
-  //           status: result[i].status,
-  //         };
-  //       }
-  //       else{
-  //        id=result[i].order_id
-  //        main_arr[i]=result[i]
-  //       }
-  //     }
-  //     setOrdProducts(main_arr)
-  //     setReload(false)
-  //     setLoading(false)
-  //   }
-  //   else{
-  //     console.log("Session is expireeeee");
-  //     setLoading(false)
-  //     setLogin(false)
-  //   }
-  //   } catch (e) {
-  //     console.log('error', e);
-  //     //console.log("eeee",e)
-  //       if(e == "AxiosError: Request failed with status code 401"){
-  //           Alert.alert(
-  //               "Attention",
-  //               "Your session is expired. Please login again",
-  //               [
-  //             {
-  //               text: "Ok",
-  //               onPress: async () => {
-  //                   try {
-  //                       const res= await axios.post('http://192.168.1.24:5000/sql/session',{user_id:currentUser.user[0].user_id},{
-  //                           headers: {
-  //                               'Authorization': `Bearer ${currentUser.token}` 
-  //                           }
-  //                       })
-  //                       navigation.navigate('Profile')
-  //               } catch (e) {
-  //                   console.log("Something went wrong");
-  //               }
-            
-  //           },
-  //             }
-  //           ]
-  //           );
-  //           dispatch(Logout());
-  //       }
-  //       else if(e == "AxiosError: Network Error"){
-  //           console.log("Something 2");
-  //           Alert.alert(
-  //               "Network Error",
-  //               "Please check your network connection.",
-  //               [
-  //             {
-  //               text: "Ok",
-  //               onPress: () => console.log("Ok"),
-  //             }
-  //           ]
-  //           );
-            
-  //       }
-  //   }
-  // };
+  const getData = async () => {
+    
+    try{
+      //setLogin(true)
+      let obj={
+        sectionId:4
+      }
+      let result = await axios.post(`http://192.168.1.24:5000/order/forwardedOrders`,obj)
+      console.log("result2==>",result.data)
+      setOrdProducts(result.data[0])
+      setLoading(false)
+    }
+    catch(error){
+      console.log("error",error);
+      if(error=="AxiosError: Network Error"){
+        ToastAndroid.showWithGravityAndOffset(  
+          "No network connectivity",  
+          ToastAndroid.LONG,  
+          ToastAndroid.BOTTOM,
+          25,
+          50 
+        ); 
+      }
+      else{
+        ToastAndroid.showWithGravityAndOffset(  
+          "Something went wrong",  
+          ToastAndroid.LONG,  
+          ToastAndroid.BOTTOM,
+          25,
+          50 
+        ); 
+      }
+    }
+      
+  };
+  
 
-  // useEffect(() => {
-  //   getData();
-  // }, [reload,limit]);
+  useEffect(() => {
+    getData();
+  }, []);
   //console.log("data==>",OrdProducts);
+  
 
   const renderItem = ({item}) => {
     //console.log("id==>",item.item_id);
+      var d = item.placedOn
+      var result=d.substring(0,10)+" "+d.substring(11,19)
     return (
-      <View style={Style.card_main1}>
-        {/* {item.order_id? */}
+      <View key={item.order_id} style={Style.card_main1}>
+        {item.order_id?
         <View style={Style.card_header}>
           <View style={Style.card_footer2}>
-          <Text style={Style.header_order_text}>Order #1223442  </Text>
+          <Text style={Style.header_order_text}>Order #{item.order_id}  </Text>
           <View style={Style.card_footer}>
           {/* <Text style={Style.card_footer_text1}>1 Items, </Text> */}
-          <Text style={Style.card_footer_text2}>Total: Rs. 999.00</Text>
+          <Text style={Style.card_footer_text2}>Total: Rs.{item.totalPrice}</Text>
           </View>
         </View>
           <View style={Style.placed}>
-            <Text style={Style.placed_text}>Placed on 11/22/2022</Text>
-            <Text style={Style.placed_status}>UnPaid</Text>
+            <Text style={Style.placed_text}>Placed on {result}</Text>
+            <Text style={Style.placed_status}>{item.status?'Paid':'UnPaid'}</Text>
           </View>
         </View>
-        {/* :null
-        } */}
+         :null
+        } 
         <View style={Style.item_inside}>
           <View style={Style.img_view}>
             <Image
               source={{
-                uri: `https://www.skechers.com/dw/image/v2/BDCN_PRD/on/demandware.static/-/Library-Sites-SkechersSharedLibrary/default/dwb414fd65/images/grid/SKX52942_ShopByStyleGridUpdate_Men_750x664_Lace_Up_Oxfords.jpg`,
+                uri: `${item.imgs}`,
               }}
               style={Style.img}
             />
           </View>
           <View style={Style.details}>
             <Text style={Style.detail_text}>
-            Description of the product
+           {item.name} of product description.
             </Text>
-            <Text style={Style.price}>Rs. 100.00</Text>
+            <Text style={Style.price}>Rs. {item.price}.00</Text>
             <View style={Style.details_bottom}>
-              <Text style={Style.qty}>Qty: 2</Text>
-              <Text style={Style.status}>Pending</Text>
+              <Text style={Style.qty}>Qty: {item.quantity}</Text>
+              <Text style={Style.status}>{item.orderStatus}</Text>
             </View>
           </View>
         </View>
-        {/* {item.order_id?
-        <View style={Style.card_footer}>
-          <Text style={Style.card_footer_text1}>1 Items, Total: </Text>
-          <Text style={Style.card_footer_text2}>Rs. 99</Text>
-        </View>:null
-        } */}
       </View>
     );
   };
   return (
     <View style={Style.all_item_main}>
-      {/* {login ? (
+      {
         isLoading ? (
           <View style={Style.main_img}>
           <Image style={{width: 50, height: 50}} source={loaderGif} />
         </View>
         ) :
-      OrdProducts && OrdProducts.length > 0 ? ( */}
+      OrdProducts && OrdProducts.length > 0 ? ( 
         <FlatList
           // ListHeaderComponent={<View></View>}
           data={OrdProducts}
-          keyExtractor={item => item.item_id}
+          keyExtractor={(item) => item.order_id}
           renderItem={renderItem}
           // onEndReached={onEndReached}
           // ListFooterComponent={flatListEnd}
           // refreshing={IsRefreshing} onRefresh={onRefresh}
         />
-      {/* ) : (
+       ) : (
         isLoading?(
         <View style={Style.main_img}>
           <Image style={{width: 50, height: 50}} source={loaderGif} />
@@ -220,28 +175,20 @@ const PreviousOrders = () => {
         ):(
         <View style={Style.main_img}>
           <Image style={{width: '70%', height: '35%'}} source={noOrder} />
-          <Text style={{color: 'gray', fontWeight: '400'}}>You haven't ordered anything yet.</Text>
+          <Text style={{color: 'gray', fontWeight: '400'}}>No Forwarded Orders Yet.</Text>
         </View>
         )
-      )):(
-        <View style={{flex:1,backgroundColor:"#fff",alignItems:"center",justifyContent:"center"}}>
-        <Text style={{fontSize:20,color:"black",marginVertical:"5%"}}>Please login to continue</Text>
-        <TouchableOpacity activeOpacity={0.7} onPress={()=>navigation.navigate('Profile')} style={{alignItems:"center",padding:"3%",width:"50%",backgroundColor:"#5A56E9",borderRadius:5}}>
-          <Text style={{fontSize:20,color:"#fff"}}>Login</Text>
-        </TouchableOpacity>
-        </View>
       )
-      } */}
+      }
     </View>
-  )
-}
-
+  );
+};
 
 const Style = StyleSheet.create({
   all_item_main: {
     flex: 1,
     width: '100%',
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#fff',
   },
   head_main: {
     display: 'flex',

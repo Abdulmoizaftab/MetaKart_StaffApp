@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image,ToastAndroid } from 'react-native'
 import React,{useEffect,useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -17,12 +17,32 @@ const Home = () => {
   const getData = async()=>{
     setIsloading(true)
     const payload = {
-      sectionId:3
+      sectionId:4
     }
-    axios.post(`http://192.168.1.26:5000/dashboard/dashboardData`, payload)
+    axios.post(`http://192.168.1.24:5000/dashboard/dashboardData`, payload)
       .then((response) => setData(response.data))
       .then(check => setIsloading(false))
-      .catch((error) => console.error(error))
+      .catch((error) => {
+        //console.error(error)
+        if(error=="AxiosError: Network Error"){
+          ToastAndroid.showWithGravityAndOffset(  
+            "No network connectivity",  
+            ToastAndroid.LONG,  
+            ToastAndroid.BOTTOM,
+            25,
+            50 
+          ); 
+        }
+        else{
+          ToastAndroid.showWithGravityAndOffset(  
+            "Something went wrong",  
+            ToastAndroid.LONG,  
+            ToastAndroid.BOTTOM,
+            25,
+            50 
+          ); 
+        }
+      })
   } 
 
   useEffect(() => {
@@ -33,7 +53,7 @@ const Home = () => {
     <View style={{ backgroundColor: "white",flex:1}}>
       <View style={styles.pageHeader}>
         {/* <MaterialCommunityIcons name='user'/> */}
-        <Text style={styles.pageHeaderText}>Staff User 01</Text>
+        <Text style={styles.pageHeaderText}>Hello, Staff User 01</Text>
         <MaterialCommunityIcons name="bell" size={21} color="white" style={styles.pageHeaderIcon} />
       </View>
       <View>
@@ -90,7 +110,7 @@ const Home = () => {
                   isLoading ? (
                     <Image source={loaderGif} style={styles.loader} />
                   ) : (
-                    <Text style={styles.statsboxCount}>{data[3][0].low_stock_items}</Text>
+                    <Text style={styles.statsboxCount}>{data[3][0].products_handed_over}</Text>
                   )
                 }
                 <Text style={styles.statsboxText}>Number of Products Handed Over</Text>
