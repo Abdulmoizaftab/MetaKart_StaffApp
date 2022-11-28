@@ -65,11 +65,13 @@ var config = {
 const appPool = new sql.ConnectionPool(config)
 //require route handlers and use the same connection pool everywhere
 const dashboardRoutes = require('./routes/dashboardRoutes')
+const loginRoutes = require('./routes/loginRoutes')
 dotenv.config();
 const app = express()
 app.use(express.json())
 app.use(cors())
 app.use('/dashboard', dashboardRoutes)
+app.use('/login', loginRoutes)
 
 
 //connect the pool and start the web server when done
