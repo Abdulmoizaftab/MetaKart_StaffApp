@@ -17,7 +17,7 @@ const Home = () => {
   const getData = async()=>{
     setIsloading(true)
     const payload = {
-      sectionId:3
+      sectionId:4
     }
     axios.post(`http://192.168.1.26:5000/dashboard/dashboardData`, payload)
       .then((response) => setData(response.data))
@@ -33,7 +33,7 @@ const Home = () => {
     <View style={{ backgroundColor: "white",flex:1}}>
       <View style={styles.pageHeader}>
         <Text style={styles.pageHeaderText}>Staff User 01</Text>
-        <MaterialCommunityIcons name="bell" size={21} color="white" style={styles.pageHeaderIcon} />
+        <MaterialCommunityIcons name="bell" size={21} color="white"/>
       </View>
       <View style={styles.dashboardMain}>
         <View style={styles.dashboardHeader}>
@@ -89,7 +89,7 @@ const Home = () => {
                   isLoading ? (
                     <Image source={loaderGif} style={styles.loader} />
                   ) : (
-                    <Text style={styles.statsboxCount}>{data[3][0].low_stock_items}</Text>
+                    <Text style={styles.statsboxCount}>{data[3][0].products_handed_over}</Text>
                   )
                 }
                 <Text style={styles.statsboxText}>Number of Products Handed Over</Text>
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#5a56e9",
     width: "100%",
     padding: "3%",
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
   },

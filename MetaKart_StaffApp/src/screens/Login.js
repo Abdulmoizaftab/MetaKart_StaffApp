@@ -57,15 +57,15 @@ const Login = () => {
             Keyboard.dismiss()
         }}>
             <View style={Style.main}>
-                <View style={Style.dot1}></View>
-                <View style={Style.dot2}></View>
-                <View style={Style.e_container}>
-                    <View style={Style.e_container2}>
-                        <Text style={Style.e_container2_text1}>MetaKart</Text>
-                        <Text style={Style.e_container2_text2}>Staff App</Text>
+                    <View style={Style.dot1}></View>
+                    <View style={Style.dot2}></View>
+                    <View style={Style.e_container}>
+                        <View style={Style.e_container2}>
+                            <Text style={Style.e_container2_text1}>MetaKart</Text>
+                            <Text style={Style.e_container2_text2}>Staff App</Text>
+                        </View>
                     </View>
-                </View>
-                <View style={Style.dot3}></View>
+                    <View style={Style.dot3}></View>
                 <View style={Style.log_container}>
                     <View style={Style.log_container2}>
                         <Text style={Style.log_container2_text}>Sign in</Text>
@@ -78,7 +78,7 @@ const Login = () => {
                             <TextInput value={password} selectionColor="black" style={Style.email_view_textinput} secureTextEntry={true} onChangeText={setPassword} />
                         </View>
 
-                        <TouchableOpacity style={Style.login_btn} onPress={()=>navigate.navigate("Home")} >
+                        <TouchableOpacity style={Style.login_btn} onPress={() => navigate.navigate("Home")} >
                             {/* {loadings===true?
             <ActivityIndicator size='large' color="white"/>:
             <Text style={Style.login_btn_text}>Login</Text>

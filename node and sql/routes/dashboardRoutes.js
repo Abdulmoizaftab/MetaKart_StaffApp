@@ -9,7 +9,7 @@ router.post("/dashboardData", (req, res) => {
     select count(DISTINCT order_details.order_id) as orderCount from order_details
     left join order_items on order_details.order_id = order_items.order_id
     left join product on order_items.product_id = product.product_id
-    where product.sectionId =${sectionId};
+    where product.sectionId =${sectionId} and order_items.sentToAdmin=0;
     
     select count(DISTINCT product_id) as total_Items_In_Section from product
     where sectionId =${sectionId}
@@ -17,8 +17,9 @@ router.post("/dashboardData", (req, res) => {
     select count(DISTINCT product_id) as low_stock_items from product
     where inStock = 0 AND sectionId = ${sectionId}
     
-    select count(DISTINCT product_id) as low_stock_items from product
-    where inStock = 0 AND sectionId = ${sectionId}
+    select count(DISTINCT oi.item_id) as products_handed_over from order_items as oi
+    inner join product as prd on prd.product_id = oi.product_id
+    where oi.sentToAdmin = 1 AND prd.sectionId = ${sectionId}
 
     select count(DISTINCT order_details.user_id) as customer_count from order_details
     left join order_items on order_details.order_id = order_items.order_id
