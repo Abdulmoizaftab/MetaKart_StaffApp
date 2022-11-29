@@ -7,17 +7,30 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
 import loaderGif from '../assets/images/loader2.gif'
+import { useSelector,useDispatch } from 'react-redux'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import {Logout} from '../redux/LoginRedux'
+import Login from './Login'
+
 
 const Home = () => {
   const navigate = useNavigation()
   const [trigger,setTrigger] = useState(true)
   const [data,setData] = useState([])
   const [isLoading,setIsloading] = useState(true)
+  const [change,setChange] = useState(false)
+  const dispatch=useDispatch();
+
+  const {isFetching,error,currentUser}=useSelector((state)=>state.user)
+
+  
 
   const getData = async()=>{
-    setIsloading(true)
-    const payload = {
-      sectionId:4
+    if(currentUser){
+
+      setIsloading(true)
+      const payload = {
+      sectionId:currentUser[0].sectionId
     }
     axios.post(`http://192.168.1.24:5000/dashboard/dashboardData`, payload)
       .then((response) => setData(response.data))
@@ -40,21 +53,30 @@ const Home = () => {
             ToastAndroid.BOTTOM,
             25,
             50 
-          ); 
+            ); 
         }
       })
-  } 
-
+    }
+    else{
+      setChange(true)
+    }
+    } 
+  const logout_user=()=>{
+    //navigate.navigate('Login')
+    dispatch(Logout())
+  }
+  
   useEffect(() => {
     getData()
-  }, [trigger])
+  }, [trigger,change])
   
   return (
-    <View style={{ backgroundColor: "white",flex:1}}>
+    <>
+      {currentUser?<View style={{ backgroundColor: "white",flex:1}}>
       <View style={styles.pageHeader}>
-        {/* <MaterialCommunityIcons name='user'/> */}
-        <Text style={styles.pageHeaderText}>Hello, Staff User 01</Text>
-        <MaterialCommunityIcons name="bell" size={21} color="white" style={styles.pageHeaderIcon} />
+        <FontAwesome name='user' size={18} color="white"/>
+        <Text style={styles.pageHeaderText}> Hello, {currentUser[0].staffName}</Text>
+        <MaterialCommunityIcons name="logout" size={21} color="white" style={styles.pageHeaderIcon} onPress={logout_user} />
       </View>
       <View>
         <View style={styles.dashboardHeader}>
@@ -111,20 +133,20 @@ const Home = () => {
                     <Image source={loaderGif} style={styles.loader} />
                   ) : (
                     <Text style={styles.statsboxCount}>{data[3][0].products_handed_over}</Text>
-                  )
-                }
+                    )
+                  }
                 <Text style={styles.statsboxText}>Number of Products Handed Over</Text>
                 <MaterialCommunityIcons name="hand-extended-outline" size={60} color="#B73D2E" style={styles.iconOrder} />
               </View>
 
               <View style={[styles.statsbox2, { backgroundColor: '#E8877B' }]}>
               {
-                  isLoading ? (
-                    <Image source={loaderGif} style={styles.loader} />
+                isLoading ? (
+                  <Image source={loaderGif} style={styles.loader} />
                   ) : (
                     <Text style={styles.statsboxCount}>{data[4][0].customer_count}</Text>
-                  )
-                }
+                    )
+                  }
                 <Text style={styles.statsboxText}>Number of Customers</Text>
                 <Octicons name="person" size={50} color="#D36659" style={styles.iconOrder} />
               </View>
@@ -140,9 +162,11 @@ const Home = () => {
           <Text style={styles.checkoutBtnText}>Show Orders</Text>
         </TouchableOpacity>
       </View>
-    </View>
-  )
-}
+    </View>:<Login setChange={setChange}/>}
+      
+    </>
+    )
+  }
 
 export default Home
 

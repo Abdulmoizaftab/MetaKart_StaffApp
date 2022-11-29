@@ -11,7 +11,6 @@ import ViewDetails from './src/screens/ViewDetails';
 import { store, persistor } from './src/redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -21,7 +20,6 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown:false}}>
-        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="HomeTab" component={HomeTab} />
         <Stack.Screen name="ViewDetails" component={ViewDetails} 

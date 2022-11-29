@@ -6,6 +6,7 @@ import loaderGif from '../assets/images/images/loader.gif';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { Logout } from '../redux/LoginRedux';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 
 // const timeago=(item)=>{
@@ -20,6 +21,7 @@ import axios from 'axios';
 const Orders = ({navigation}) => {
   const [OrdProducts, setOrdProducts] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const {isFetching,error,currentUser}=useSelector((state)=>state.user)
   // const [limit, setlimit] = useState(6);
   // const [login,setLogin]=useState(false)
   // const {isFetching, error, currentUser, loadings} = useSelector(
@@ -65,7 +67,7 @@ const Orders = ({navigation}) => {
     try{
       //setLogin(true)
       let obj={
-        sectionId:4
+        sectionId:currentUser[0].sectionId
       }
       let result = await axios.post(`http://192.168.1.24:5000/order/currentOrders`,obj)
       console.log("result1==>",result.data)

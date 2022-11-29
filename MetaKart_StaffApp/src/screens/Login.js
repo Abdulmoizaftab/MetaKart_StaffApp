@@ -1,41 +1,30 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, BackHandler, TouchableWithoutFeedback,Alert, Keyboard, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, BackHandler, TouchableWithoutFeedback,Alert, Keyboard, ActivityIndicator, } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { useNavigation,useIsFocused } from '@react-navigation/native';
+
 import {login} from '../redux/apiCalls'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 // import FontAwesome5Pro from 'react-native-vector-icons/FontAwesome5Pro'
 import {useDispatch,useSelector} from 'react-redux'
-// import { login } from '../redux/apiCalls'
-// import Gmail_auth from '../components/Gmail_auth';
-// import Facebook_auth from '../components/Facebook_auth';
-// import { loginFailure } from '../redux/LoginRedux';
 
-const Login = () => {
-    const isFocused = useIsFocused();
-    const navigate = useNavigation()
+
+import { loginFailure } from '../redux/LoginRedux';
+
+const Login = ({navigation,setChange}) => {
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [css, setCss] = useState("75%");
    
     const dispatch=useDispatch()
-
-    const changeCss = (type) => {
-        // setCss("100%")
-
-        if (type === "pressed") {
-            setCss('100%')
-        } else {
-            setCss('75%')
-        }
-
-    }
+    const {isFetching,error,currentUser}=useSelector((state)=>state.user)
+    console.log("login",currentUser)
     
     const handlePress=()=>{
         // console.log(email,password)
         if(email && password){
-          login(dispatch,{email,password})
-          //console.log("pressed");
+          login(dispatch,{email,password,setChange})
+          //setChange(false)
         }
         else{
           Alert.alert(
@@ -49,13 +38,25 @@ const Login = () => {
         ]
         );
         }
+        
+      }
+      if(error===true){
+        Alert.alert(
+          "Login failed",
+          "Something went wrong",
+          [
+        {
+          text: "Ok",
+          onPress: () => dispatch(loginFailure(false)),
+        }
+      ]
+      );
       }
 
     return (
-
-        <TouchableWithoutFeedback onPress={() => {
+        <TouchableWithoutFeedback onPress={()=>{
             Keyboard.dismiss()
-        }}>
+          }}>
             <View style={Style.main}>
                 <View style={Style.dot1}></View>
                 <View style={Style.dot2}></View>
@@ -66,31 +67,32 @@ const Login = () => {
                     </View>
                 </View>
                 <View style={Style.dot3}></View>
-                <KeyboardAvoidingView style={{ height: '100%' }}>
+
+                
                     <View style={{ width: '100%', height: `${css}`, backgroundColor: "white", borderTopRightRadius: 15, borderTopLeftRadius: 15, justifyContent: "center" }} >
                         <View style={Style.log_container2}>
                             <Text style={Style.log_container2_text}>Sign in</Text>
                             <View style={Style.email_view}>
                                 <Text style={Style.email_view_text}><MaterialCommunityIcons name='email-outline' />  Email</Text>
-                                <TextInput value={email} selectionColor="black" style={Style.email_view_textinput} onChangeText={setEmail} onFocus={() => changeCss("pressed")} onBlur={() => { changeCss("notPressed") }} />
+                                <TextInput value={email} selectionColor="black" style={Style.email_view_textinput} onChangeText={setEmail}  />
                             </View>
                             <View style={Style.email_view}>
                                 <Text style={Style.email_view_text}><MaterialCommunityIcons name='lock-outline' />  Password</Text>
-                                <TextInput value={password} selectionColor="black" style={Style.email_view_textinput} secureTextEntry={true} onChangeText={setPassword} onFocus={() => changeCss("pressed")} onBlur={() => { changeCss("notPressed") }} />
+                                <TextInput value={password} selectionColor="black" style={Style.email_view_textinput} secureTextEntry={true} onChangeText={setPassword}  />
                             </View>
 
-                            <TouchableOpacity style={Style.login_btn} onPress={handlePress} >
-                                {/* {loadings===true?
+                            <TouchableOpacity disabled={isFetching===true?true:false} activeOpacity={0.1} style={Style.login_btn} onPress={handlePress} >
+                                {isFetching===true?
             <ActivityIndicator size='large' color="white"/>:
-            <Text style={Style.login_btn_text}>Login</Text>
-        } */}
-                                <Text style={Style.login_btn_text}>Login</Text>
+        <Text style={Style.login_btn_text}>Login</Text>
+        }
                             </TouchableOpacity>
                         </View>
                     </View>
-                </KeyboardAvoidingView>
+            
             </View>
-        </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
+        
     );
 };
 const Style = StyleSheet.create({
@@ -183,3 +185,4 @@ const Style = StyleSheet.create({
 });
 
 export default Login;
+
