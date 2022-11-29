@@ -7,7 +7,7 @@ import Home from './Home';
 import PreviousOrders from './previousOrders';
 import DeliverOrders from './deliver';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -40,8 +40,8 @@ const HomeTab = () => {
         >
             {/* <Tab.Screen name="Dashboard" component={Home}  /> */}
             <Tab.Screen name="Current" component={Orders} />
-            <Tab.Screen name="Previous" component={PreviousOrders} />
-            <Tab.Screen name="Delivered" component={DeliverOrders} />
+            <Tab.Screen name="Forwarded" component={PreviousOrders} />
+            <Tab.Screen name="Previous" component={DeliverOrders} />
         </Tab.Navigator>
         </>
     )

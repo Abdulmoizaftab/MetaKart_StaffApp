@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image,ToastAndroid } from 'react-native'
 import React,{useEffect,useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -7,35 +7,78 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
 import loaderGif from '../assets/images/loader2.gif'
+import { useSelector,useDispatch } from 'react-redux'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import {Logout} from '../redux/LoginRedux'
+import Login from './Login'
+
 
 const Home = () => {
   const navigate = useNavigation()
   const [trigger,setTrigger] = useState(true)
   const [data,setData] = useState([])
   const [isLoading,setIsloading] = useState(true)
+  const [change,setChange] = useState(false)
+  const dispatch=useDispatch();
+
+  const {isFetching,error,currentUser}=useSelector((state)=>state.user)
+
+  
 
   const getData = async()=>{
-    setIsloading(true)
-    const payload = {
-      sectionId:4
+    if(currentUser){
+
+      setIsloading(true)
+      const payload = {
+      sectionId:currentUser[0].sectionId
     }
-    axios.post(`http://192.168.1.26:5000/dashboard/dashboardData`, payload)
+    axios.post(`http://192.168.1.24:5000/dashboard/dashboardData`, payload)
       .then((response) => setData(response.data))
       .then(check => setIsloading(false))
-      .catch((error) => console.error(error))
-  } 
-
+      .catch((error) => {
+        //console.error(error)
+        if(error=="AxiosError: Network Error"){
+          ToastAndroid.showWithGravityAndOffset(  
+            "No network connectivity",  
+            ToastAndroid.LONG,  
+            ToastAndroid.BOTTOM,
+            25,
+            50 
+          ); 
+        }
+        else{
+          ToastAndroid.showWithGravityAndOffset(  
+            "Something went wrong",  
+            ToastAndroid.LONG,  
+            ToastAndroid.BOTTOM,
+            25,
+            50 
+            ); 
+        }
+      })
+    }
+    else{
+      setChange(true)
+    }
+    } 
+  const logout_user=()=>{
+    //navigate.navigate('Login')
+    dispatch(Logout())
+  }
+  
   useEffect(() => {
     getData()
-  }, [trigger])
+  }, [trigger,change])
   
   return (
-    <View style={{ backgroundColor: "white",flex:1}}>
+    <>
+      {currentUser?<View style={{ backgroundColor: "white",flex:1}}>
       <View style={styles.pageHeader}>
-        <Text style={styles.pageHeaderText}>Staff User 01</Text>
-        <MaterialCommunityIcons name="bell" size={21} color="white"/>
+        <FontAwesome name='user' size={18} color="white"/>
+        <Text style={styles.pageHeaderText}> Hello, {currentUser[0].staffName}</Text>
+        <MaterialCommunityIcons name="logout" size={21} color="white" style={styles.pageHeaderIcon} onPress={logout_user} />
       </View>
-      <View style={styles.dashboardMain}>
+      <View>
         <View style={styles.dashboardHeader}>
           <Text style={styles.dashboardHeading}>Dashboard</Text>
           <TouchableOpacity style={styles.navigateButton} onPress={()=>setTrigger(!trigger)}>
@@ -90,20 +133,20 @@ const Home = () => {
                     <Image source={loaderGif} style={styles.loader} />
                   ) : (
                     <Text style={styles.statsboxCount}>{data[3][0].products_handed_over}</Text>
-                  )
-                }
+                    )
+                  }
                 <Text style={styles.statsboxText}>Number of Products Handed Over</Text>
                 <MaterialCommunityIcons name="hand-extended-outline" size={60} color="#B73D2E" style={styles.iconOrder} />
               </View>
 
               <View style={[styles.statsbox2, { backgroundColor: '#E8877B' }]}>
               {
-                  isLoading ? (
-                    <Image source={loaderGif} style={styles.loader} />
+                isLoading ? (
+                  <Image source={loaderGif} style={styles.loader} />
                   ) : (
                     <Text style={styles.statsboxCount}>{data[4][0].customer_count}</Text>
-                  )
-                }
+                    )
+                  }
                 <Text style={styles.statsboxText}>Number of Customers</Text>
                 <Octicons name="person" size={50} color="#D36659" style={styles.iconOrder} />
               </View>
@@ -119,9 +162,11 @@ const Home = () => {
           <Text style={styles.checkoutBtnText}>Show Orders</Text>
         </TouchableOpacity>
       </View>
-    </View>
-  )
-}
+    </View>:<Login setChange={setChange}/>}
+      
+    </>
+    )
+  }
 
 export default Home
 
@@ -130,7 +175,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#5a56e9",
     width: "100%",
     padding: "3%",
-    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
   },

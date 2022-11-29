@@ -8,10 +8,9 @@ import HomeTab from './src/screens/HomeTab';
 import SplashScreen from 'react-native-splash-screen';
 import Home from './src/screens/Home';
 import ViewDetails from './src/screens/ViewDetails';
-
-
-
-
+import { store, persistor } from './src/redux/store';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -21,7 +20,6 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown:false}}>
-        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="HomeTab" component={HomeTab} />
         <Stack.Screen name="ViewDetails" component={ViewDetails} 
@@ -38,7 +36,19 @@ const App = () => {
   )
 }
 
-export default App
+
+export default ()=>{
+  return(
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App></App>
+      </PersistGate>
+    </Provider>
+  )
+};
+
+
+
 
 const styles = StyleSheet.create({
   main:{

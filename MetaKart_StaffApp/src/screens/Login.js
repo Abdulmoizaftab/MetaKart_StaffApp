@@ -1,61 +1,64 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, BackHandler, TouchableWithoutFeedback,Alert, Keyboard, ActivityIndicator, } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { useNavigation } from '@react-navigation/native';
+
+import {login} from '../redux/apiCalls'
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 // import FontAwesome5Pro from 'react-native-vector-icons/FontAwesome5Pro'
-// import {useDispatch,useSelector} from 'react-redux'
-// import { login } from '../redux/apiCalls'
-// import Gmail_auth from '../components/Gmail_auth';
-// import Facebook_auth from '../components/Facebook_auth';
-// import { loginFailure } from '../redux/LoginRedux';
+import {useDispatch,useSelector} from 'react-redux'
 
-const Login = () => {
 
-    const navigate = useNavigation()
+import { loginFailure } from '../redux/LoginRedux';
+
+const Login = ({navigation,setChange}) => {
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    //   const dispatch=useDispatch()
-    //   const {isFetching,error,currentUser,loadings}=useSelector((state)=>state.user)
-    //   const handlePress=()=>{
-
-    //     if(email && password){
-    //       login(dispatch,{email,password,navigation})
-    //     }
-    //     else{
-    //       Alert.alert(
-    //         "Login failed",
-    //         "Please fill all fields",
-    //         [
-    //       {
-    //         text: "Ok",
-    //         onPress: () => console.log("Ok"),
-    //       }
-    //     ]
-    //     );
-    //     }
-    //   }
-    //   // useEffect(() => {
-    //   //   setLoader(loading)
-    //   // }, [loader])
-
-    //   if(error===true){
-    //     Alert.alert(
-    //       "Login failed",
-    //       "Something went wrong",
-    //       [
-    //     {
-    //       text: "Ok",
-    //       onPress: () => dispatch(loginFailure(false)),
-    //     }
-    //   ]
-    //   );
-    //   }
-    return (
-
-        <TouchableWithoutFeedback onPress={() => {
-            Keyboard.dismiss()
-        }}>
+    const [css, setCss] = useState("75%");
+   
+    const dispatch=useDispatch()
+    const {isFetching,error,currentUser}=useSelector((state)=>state.user)
+    console.log("login",currentUser)
+    
+    const handlePress=()=>{
+        // console.log(email,password)
+        if(email && password){
+          login(dispatch,{email,password,setChange})
+          //setChange(false)
+        }
+        else{
+          Alert.alert(
+            "Login failed",
+            "Please fill all fields",
+            [
+          {
+            text: "Ok",
+            onPress: () => console.log("Ok"),
+          }
+        ]
+        );
+        }
+        
+    }
+      if(error===true){
+          Alert.alert(
+          "Login failed",
+          "Something went wrong",
+          [
+              {
+                  text: "Ok",
+                  onPress: () => dispatch(loginFailure(false)),
+                }
+            ]
+            );
+        }
+        
+        return (
+            <View>
+            <TouchableWithoutFeedback onPress={()=>{
+                Keyboard.dismiss()
+            }}>
+              </TouchableWithoutFeedback>
             <View style={Style.main}>
                     <View style={Style.dot1}></View>
                     <View style={Style.dot2}></View>
@@ -65,30 +68,33 @@ const Login = () => {
                             <Text style={Style.e_container2_text2}>Staff App</Text>
                         </View>
                     </View>
-                    <View style={Style.dot3}></View>
-                <View style={Style.log_container}>
-                    <View style={Style.log_container2}>
-                        <Text style={Style.log_container2_text}>Sign in</Text>
-                        <View style={Style.email_view}>
-                            <Text style={Style.email_view_text}><MaterialCommunityIcons name='email-outline' />  Email</Text>
-                            <TextInput value={email} selectionColor="black" style={Style.email_view_textinput} onChangeText={setEmail} />
-                        </View>
-                        <View style={Style.email_view}>
-                            <Text style={Style.email_view_text}><MaterialCommunityIcons name='lock-outline' />  Password</Text>
-                            <TextInput value={password} selectionColor="black" style={Style.email_view_textinput} secureTextEntry={true} onChangeText={setPassword} />
-                        </View>
-
-                        <TouchableOpacity style={Style.login_btn} onPress={() => navigate.navigate("Home")} >
-                            {/* {loadings===true?
-            <ActivityIndicator size='large' color="white"/>:
-            <Text style={Style.login_btn_text}>Login</Text>
-        } */}
-                            <Text style={Style.login_btn_text}>Login</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
+                <View style={Style.dot3}></View>
+
+                
+                    <View style={{ width: '100%', height: `${css}`, backgroundColor: "white", borderTopRightRadius: 15, borderTopLeftRadius: 15, justifyContent: "center" }} >
+                        <View style={Style.log_container2}>
+                            <Text style={Style.log_container2_text}>Sign in</Text>
+                            <View style={Style.email_view}>
+                                <Text style={Style.email_view_text}><MaterialCommunityIcons name='email-outline' />  Email</Text>
+                                <TextInput value={email} selectionColor="black" style={Style.email_view_textinput} onChangeText={setEmail}  />
+                            </View>
+                            <View style={Style.email_view}>
+                                <Text style={Style.email_view_text}><MaterialCommunityIcons name='lock-outline' />  Password</Text>
+                                <TextInput value={password} selectionColor="black" style={Style.email_view_textinput} secureTextEntry={true} onChangeText={setPassword}  />
+                            </View>
+
+                            <TouchableOpacity disabled={isFetching===true?true:false} activeOpacity={0.1} style={Style.login_btn} onPress={handlePress} >
+                                {isFetching===true?
+            <ActivityIndicator size='large' color="white"/>:
+        <Text style={Style.login_btn_text}>Login</Text>
+        }
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+            
             </View>
-        </TouchableWithoutFeedback>
+        
     );
 };
 const Style = StyleSheet.create({
@@ -136,7 +142,7 @@ const Style = StyleSheet.create({
         borderWidth: 4, borderColor: 'rgba(158, 150, 150, .3)', width: 25, height: 25, borderRadius: 1000, position: "absolute", top: "18%", right: "15%"
     },
     log_container: {
-        width: '100%', height: '75%', backgroundColor: "white", borderTopRightRadius: 15, borderTopLeftRadius: 15, justifyContent: "center"
+        width: '100%', height: '100%', backgroundColor: "white", borderTopRightRadius: 15, borderTopLeftRadius: 15, justifyContent: "center"
     },
     log_container2: {
         width: "80%", height: "85%", alignSelf: "center", justifyContent: "center"
@@ -181,3 +187,4 @@ const Style = StyleSheet.create({
 });
 
 export default Login;
+
