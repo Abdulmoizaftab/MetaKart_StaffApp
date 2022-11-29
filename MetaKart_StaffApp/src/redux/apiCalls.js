@@ -6,7 +6,7 @@ export const login = async (dispatch, user) => {
     dispatch(loginStart());
     try {
         
-        const res = await axios.post("http://192.168.1.24:5000/login", {email:user.email,password:user.password});
+        const res = await axios.post("http://192.168.1.26:5000/login", {email:user.email,password:user.password});
         // console.log(res,"New data")
         dispatch(loginSuccess(res.data));
         console.log("Data==>", res.data);

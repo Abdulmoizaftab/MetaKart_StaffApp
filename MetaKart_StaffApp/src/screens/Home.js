@@ -32,7 +32,7 @@ const Home = () => {
       const payload = {
       sectionId:currentUser[0].sectionId
     }
-    axios.post(`http://192.168.1.24:5000/dashboard/dashboardData`, payload)
+    axios.post(`http://192.168.1.26:5000/dashboard/dashboardData`, payload)
       .then((response) => setData(response.data))
       .then(check => setIsloading(false))
       .catch((error) => {

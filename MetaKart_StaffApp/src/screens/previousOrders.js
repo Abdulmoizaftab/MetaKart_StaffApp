@@ -71,7 +71,7 @@ const PreviousOrders = () => {
       let obj={
         sectionId:currentUser[0].sectionId
       }
-      let result = await axios.post(`http://192.168.1.24:5000/order/forwardedOrders`,obj)
+      let result = await axios.post(`http://192.168.1.26:5000/order/forwardedOrders`,obj)
       console.log("result2==>",result.data)
       setOrdProducts(result.data[0])
       setLoading(false)

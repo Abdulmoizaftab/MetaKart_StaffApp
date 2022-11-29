@@ -66,7 +66,7 @@ const DeliverOrders = () => {
       let obj={
         sectionId:4
       }
-      let result = await axios.post(`http://192.168.1.24:5000/order/prevOrders`,obj)
+      let result = await axios.post(`http://192.168.1.26:5000/order/prevOrders`,obj)
       console.log("result3==>",result.data)
       setOrdProducts(result.data[0])
       setLoading(false)
