@@ -20,7 +20,7 @@ const ViewDetails = ({route,navigation}) => {
       let obj={
         itemId:id
       }
-      let result = await axios.post(`http://192.168.1.26:5000/order/sendToAdmin`,obj)
+      let result = await axios.post(`http://192.168.1.10:5000/order/sendToAdmin`,obj)
       console.log("result==>",result.data)
       setTimeout(()=>{
         setSpin(false)

@@ -69,7 +69,7 @@ const Orders = ({navigation}) => {
       let obj={
         sectionId:currentUser[0].sectionId
       }
-      let result = await axios.post(`http://192.168.1.26:5000/order/currentOrders`,obj)
+      let result = await axios.post(`http://192.168.1.10:5000/order/currentOrders`,obj)
       console.log("result1==>",result.data)
       setOrdProducts(result.data[0])
       setLoading(false)
